@@ -20,7 +20,7 @@ main{max-width:1224px;margin:26px auto 52px;padding:0 22px}.steps{display:grid;g
 <body>
 <header><div class="tag">d払い・クレカ共通</div><h1>家計簿 明細CSV変換アプリ</h1><p>Web明細を貼り付け → 保存済みと照合 → ✓を選んでコピー。履歴はGoogleアカウントに紐づけてクラウドに保存します。</p></header>
 <main>
-<div class="cloud-auth" aria-live="polite"><icon hidden></icon><span id="auth-status" class="auth-message">Firebaseに接続しています…</span><span class="version">Ver. 2.0（接続テスト版）</span><button class="primary" id="login" type="button" hidden>Googleでログイン</button><button id="logout" type="button" hidden>ログアウト</button></div>
+<div class="cloud-auth" aria-live="polite"><icon hidden></icon><span id="auth-status" class="auth-message">Firebaseに接続しています…</span><span class="version">Ver. 2.0.1（接続テスト版）</span><button class="primary" id="login" type="button" hidden>Googleでログイン</button><button id="logout" type="button" hidden>ログアウト</button></div>
 <p class="cloud-warning" id="cloud-error" hidden></p>
 <div id="app-content" hidden>
 <p class="sync-note">ログインしたGoogleアカウントのFirestoreに保存します。どのPCでも同じアカウントで開くと履歴を共有できます。通信できない場合は自動保存されません。</p>
@@ -227,7 +227,6 @@ function downloadCsv(rows,name,target){if(!rows.length)return;const cols=active=
 async function copySelected(kind){const rows=currentSelected();if(!rows.length)return;const tsv=rows.map(r=>(kind==='time'?[r.time]:[r.date,r.amount,r.shop]).join('\t')).join('\n');try{if(!navigator.clipboard?.writeText)throw Error('clipboard unavailable');await navigator.clipboard.writeText(tsv);}catch(e){const temp=document.createElement('textarea');temp.value=tsv;temp.style.position='fixed';temp.style.opacity='0';document.body.append(temp);temp.focus();temp.select();const ok=document.execCommand('copy');temp.remove();if(!ok){setMessage($('notice'),'コピーできませんでした。CSV保存をご利用ください。','warn');return;}}
  const label=kind==='time'?'時刻1列':'日付・金額・利用先3列';setMessage($('notice'),`選択した${rows.length}件の${label}をコピーしました。`,'success');}
 function exportBackup(){const st=modes[active];if(!st.saved.length)return;const date=new Date(),stamp=[date.getFullYear(),String(date.getMonth()+1).padStart(2,'0'),String(date.getDate()).padStart(2,'0')].join('-');const data={type:st.backupType,version:1,exportedAt:date.toISOString(),items:st.saved};downloadBlob(JSON.stringify(data,null,2),`${names[active]}_履歴バックアップ_${stamp}.json`,'application/json;charset=utf-8');setMessage($('saved-notice'),`${st.saved.length}件のバックアップを保存しました。`,'success');}
-async 
 async function importBackup(file,mode){if(!file)return;const st=modes[mode];try{
  const backup=JSON.parse(await file.text());if(backup?.type!==st.backupType||backup.version!==1||!Array.isArray(backup.items))throw Error(`選択中の${names[mode]}用バックアップではありません。`);
  if(backup.items.length>5000)throw Error('件数が多すぎます。');const imported=backup.items.map(r=>cleanStoredRow(r,mode));if(imported.some(r=>!r))throw Error('一部の明細の形式が正しくありません。');
