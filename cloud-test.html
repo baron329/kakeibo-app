@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>家計簿｜d払い・クレカ明細CSV変換アプリ Ver.2.0</title>
+<title>家計簿｜d払い・クレカ明細CSV変換アプリ Ver.2.0.2 テスト版</title>
 <style>
 :root{--navy:#1B365D;--navy-dark:#102841;--blue:#DCEEFB;--pale:#F4F9FD;--line:#B9D3EA;--ink:#192B3F;--muted:#617488;--bg:#F5F8FC;--white:#fff;--green:#15734b;--red:#9e2639;--amber:#8b5e0a}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;font-size:16px;line-height:1.6}
@@ -18,9 +18,10 @@ main{max-width:1224px;margin:26px auto 52px;padding:0 22px}.steps{display:grid;g
 </style>
 </head>
 <body>
-<header><div class="tag">d払い・クレカ共通</div><h1>家計簿 明細CSV変換アプリ</h1><p>Web明細を貼り付け → 保存済みと照合 → ✓を選んでコピー。履歴はGoogleアカウントに紐づけてクラウドに保存します。</p></header>
+<header><div class="tag">テスト版｜正式版とはデータ別管理</div><h1>家計簿 明細CSV変換アプリ</h1><p>Web明細を貼り付け → 保存済みと照合 → ✓を選んでコピー。履歴はGoogleアカウントに紐づけてクラウドに保存します。</p></header>
 <main>
-<div class="cloud-auth" aria-live="polite"><icon hidden></icon><span id="auth-status" class="auth-message">Firebaseに接続しています…</span><span class="version">Ver. 2.0.1（接続テスト版）</span><button class="primary" id="login" type="button" hidden>Googleでログイン</button><button id="logout" type="button" hidden>ログアウト</button></div>
+<p class="cloud-warning" role="status"><strong>テスト環境：</strong>このページの保存履歴は正式版と分かれています。ここでの保存・削除は正式版に反映されません。以前テスト版で保存した履歴は正式版側に残っています。</p>
+<div class="cloud-auth" aria-live="polite"><icon hidden></icon><span id="auth-status" class="auth-message">Firebaseに接続しています…</span><span class="version">Ver. 2.0.2（データ分離テスト版）</span><button class="primary" id="login" type="button" hidden>Googleでログイン</button><button id="logout" type="button" hidden>ログアウト</button></div>
 <p class="cloud-warning" id="cloud-error" hidden></p>
 <div id="app-content" hidden>
 <p class="sync-note">ログインしたGoogleアカウントのFirestoreに保存します。どのPCでも同じアカウントで開くと履歴を共有できます。通信できない場合は自動保存されません。</p>
@@ -129,7 +130,7 @@ function displayPreviewTable(rows){const target=$('result');target.replaceChildr
  const fragment=document.createDocumentFragment();for(const row of rows){const tr=document.createElement('tr');const checkTd=document.createElement('td');checkTd.className='check-cell';const cb=document.createElement('input');cb.type='checkbox';cb.checked=row.selected;cb.dataset.index=String(row.index);cb.setAttribute('aria-label',`${row.date} ${row.shop} ${row.amount}円をコピー対象にする`);checkTd.append(cb);tr.append(checkTd);const values=[[row.date,'date'],[String(row.amount),'amount'],[row.shop,'']];if(active==='dpay')values.push([row.time||'—','time']);for(const [value,cls] of values){const td=document.createElement('td');td.className=cls;td.textContent=value;tr.append(td);}const status=document.createElement('td');const text=document.createElement('span');text.className='check-label '+(row.existing?'existing':'fresh');text.textContent=row.existing?'保存済':'新規';status.append(text);tr.append(status);fragment.append(tr);}target.append(fragment);}
 
 function pureRows(rows, mode){return rows.map(r=>cleanStoredRow(r,mode)).filter(Boolean);}
-function remoteRef(mode){if(!currentUser)throw Error('ログインしていません');return doc(db,'accounts',currentUser.uid,'statements',mode);}
+function remoteRef(mode){if(!currentUser)throw Error('ログインしていません');return doc(db,'accounts',currentUser.uid,'test-statements',mode);}
 function authMessage(msg, isError=false){$('auth-status').textContent=msg;$('auth-status').classList.toggle('error',isError);}
 function errorMessage(msg){$('cloud-error').hidden=false;$('cloud-error').textContent=msg;}
 function removeError(){ $('cloud-error').hidden=true; $('cloud-error').textContent=''; }
