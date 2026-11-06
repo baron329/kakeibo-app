@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>家計簿｜d払い・クレカ明細CSV変換アプリ Ver.2.1.0 テスト版</title>
+<title>家計簿｜d払い・クレカ明細CSV変換アプリ Ver.2.1.1 テスト版</title>
 <style>
 :root{--navy:#1B365D;--navy-dark:#102841;--blue:#DCEEFB;--pale:#F4F9FD;--line:#B9D3EA;--ink:#192B3F;--muted:#617488;--bg:#F5F8FC;--white:#fff;--green:#15734b;--red:#9e2639;--amber:#8b5e0a}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;font-size:16px;line-height:1.6}
@@ -18,10 +18,10 @@ main{max-width:1224px;margin:26px auto 52px;padding:0 22px}.steps{display:grid;g
 </style>
 </head>
 <body>
-<header><div class="tag">テスト版｜正式版とはデータ別管理</div><h1>家計簿 明細CSV変換アプリ</h1><p>Web明細を貼り付け → 保存済みと照合 → ✓を選んで3列コピーすると03に保存。入力途中の明細もクラウドで保持します。</p></header>
+<header><div class="tag">テスト版｜正式版とはデータ別管理</div><h1>家計簿 明細CSV変換アプリ</h1><p>Web明細を貼り付け → 保存済みと照合 → ✓を選んでコピーすると03に保存。入力途中の明細もクラウドで保持します。</p></header>
 <main>
 <p class="cloud-warning" role="status"><strong>テスト環境：</strong>このページの保存履歴は正式版と分かれています。ここでの保存・削除は正式版に反映されません。以前テスト版で保存した履歴は正式版側に残っています。</p>
-<div class="cloud-auth" aria-live="polite"><icon hidden></icon><span id="auth-status" class="auth-message">Firebaseに接続しています…</span><span class="version">Ver. 2.1.0（データ分離テスト版）</span><button class="primary" id="login" type="button" hidden>Googleでログイン</button><button id="logout" type="button" hidden>ログアウト</button></div>
+<div class="cloud-auth" aria-live="polite"><icon hidden></icon><span id="auth-status" class="auth-message">Firebaseに接続しています…</span><span class="version">Ver. 2.1.1（データ分離テスト版）</span><button class="primary" id="login" type="button" hidden>Googleでログイン</button><button id="logout" type="button" hidden>ログアウト</button></div>
 <p class="cloud-warning" id="cloud-error" hidden></p>
 <div id="app-content" hidden>
 <p class="sync-note">03の明細履歴と01の下書きは、それぞれ別の場所にクラウド保存します。同じGoogleアカウントなら別PCでも続きから使えます。</p>
@@ -31,7 +31,7 @@ main{max-width:1224px;margin:26px auto 52px;padding:0 22px}.steps{display:grid;g
 <p id="source-hint" class="hint">d払いのWeb明細からコピーした文字列を、そのまま貼り付けてください。</p>
 <textarea id="source" spellcheck="false" aria-label="元のWeb明細を貼り付け" placeholder="ここにWeb明細を貼り付けてください。"></textarea>
 <div class="button-row"><button id="sample" type="button">サンプルを表示</button><button id="clear" type="button">入力をクリア</button></div><p id="draft-status" class="small-note" role="status" aria-live="polite">下書きの同期状態を確認中です。</p><div class="button-row"><button id="draft-overwrite" type="button" hidden>このPCの入力をクラウドに保存</button><button id="draft-reload" type="button" hidden>クラウドの下書きを読み込む</button></div>
-<p class="small-note">貼り付けると02で照合しますが、03には保存されません。<strong>3列コピーを押したときだけ選択した明細を03に保存</strong>します。01は「入力をクリア」まで下書きとして保持します。サンプルは03に保存しません。</p>
+<p class="small-note">貼り付けると02で照合しますが、03には保存されません。<strong>02の明細コピーボタンを押したときだけ選択した明細を03に保存</strong>します。01は「入力をクリア」まで下書きとして保持します。サンプルは03に保存しません。</p>
 </div></section>
 <section class="panel" aria-labelledby="output-title"><div class="panel-header"><span class="step">02</span><h2 id="output-title">照合・コピー対象を選ぶ</h2></div><div class="panel-body">
 <div class="results-info"><div class="metric"><div class="name">今回の明細</div><div id="count" class="number">0 件</div></div><div class="metric"><div class="name">今回見つかった新規</div><div id="new-count" class="number">0 件</div></div><div class="metric"><div class="name">保存済みと一致</div><div id="match-count" class="number">0 件</div></div></div>
@@ -46,7 +46,7 @@ main{max-width:1224px;margin:26px auto 52px;padding:0 22px}.steps{display:grid;g
 <section class="panel archive" aria-labelledby="archive-title"><div class="panel-header"><span class="step">03</span><h2 id="archive-title">保存したd払い明細</h2><span class="status-pill">クラウドに保管</span></div><div class="panel-body">
 <div id="storage-warning" class="storage-warning" role="alert">Firebaseとの接続に問題があるため、履歴の保存・削除を停止しました。通信状況とログイン状態を確認してください。</div>
 <div class="results-info"><div class="metric"><div class="name">保存済みの最古利用日</div><div id="earliest-date" class="number">未保存</div></div><div class="metric"><div class="name">保存済みの最新利用日</div><div id="latest-date" class="number">未保存</div></div><div class="metric"><div class="name">保存済みの明細</div><div id="saved-count" class="number">0 件</div></div></div>
-<p class="hint">02で3列コピーした明細だけをクラウドへ保存します。d払い・クレカの保存履歴は別々です。<strong>「保存済み」はアプリに保管した意味で、Notionへの登録済みを保証するものではありません。</strong></p>
+<p class="hint">02で明細コピーした明細だけをクラウドへ保存します。d払い・クレカの保存履歴は別々です。<strong>「保存済み」はアプリに保管した意味で、Notionへの登録済みを保証するものではありません。</strong></p>
 <div class="table-wrap"><table class="archive-table"><thead><tr><th>日付</th><th>金額</th><th>利用先</th><th class="time-col">時刻</th></tr></thead><tbody id="saved-result"><tr><td class="empty" colspan="4">まだ明細が保存されていません。</td></tr></tbody></table></div>
 <p id="saved-limit" class="small-note"></p><p id="saved-notice" class="notice" aria-live="polite"></p>
 <div class="button-row"><button id="saved-csv" type="button" disabled>保存済みの全件をCSV保存</button><button id="backup" type="button" disabled>履歴バックアップを保存</button><button id="restore" type="button">バックアップを読み込む</button><input id="restore-file" type="file" accept=".json,application/json" hidden aria-label="履歴バックアップファイル"></div>
@@ -55,9 +55,9 @@ main{max-width:1224px;margin:26px auto 52px;padding:0 22px}.steps{display:grid;g
 <div class="date-controls" style="margin-top:10px"><div class="date-field"><label for="from-date">開始日（必須）</label><input id="from-date" type="date"></div><div class="date-field"><label for="to-date">終了日（自動入力・変更可）</label><input id="to-date" type="date"></div></div>
 <div class="button-row"><button class="danger" id="delete" type="button" disabled>指定日の履歴を削除</button></div><p id="delete-preview" class="archive-help">削除する日付を選ぶと対象件数を表示します。</p>
 <hr class="divider"><div class="archive-section-title" style="color:var(--red)">保存した明細をすべて削除</div><p>現在選択中の支払方法の保存履歴だけをすべて削除します。操作前に確認が表示されます。</p><div class="button-row"><button class="danger" id="delete-all" type="button" disabled>この支払方法の明細を全削除</button></div></div>
-<p class="archive-help"><strong>削除するのは03の保存履歴だけです。</strong> 01の入力内容と02の変換結果は残ります。履歴削除後も、3列コピーを押すまでは03に保存されません。</p><p class="archive-help"><strong>保存について：</strong>保存履歴はGoogleのCloud Firestoreに保存されます。GoogleアカウントでログインしているPCから利用できます。アプリはGitHub Pagesで公開されていますが、保存履歴へのアクセスはFirestoreのルールによって制限します。定期的なバックアップをおすすめします。</p>
+<p class="archive-help"><strong>削除するのは03の保存履歴だけです。</strong> 01の入力内容と02の変換結果は残ります。履歴削除後も、02の明細コピーボタンを押すまでは03に保存されません。</p><p class="archive-help"><strong>保存について：</strong>保存履歴はGoogleのCloud Firestoreに保存されます。GoogleアカウントでログインしているPCから利用できます。アプリはGitHub Pagesで公開されていますが、保存履歴へのアクセスはFirestoreのルールによって制限します。定期的なバックアップをおすすめします。</p>
 </div></section>
-<p class="foot"><strong>d払い：</strong>「[日付 時刻]」、利用先、「¥ 金額」を抽出します。<strong>クレカ：</strong>「日付 → 利用先 → 支払回数 → 金額（円）」を抽出します。クレカには時刻が含まれないため、時刻欄は表示せずCSVも3列で出力します。金額の桁区切りカンマを除去し、元の明細にある <code>#VALUE!</code> などのエラー行は出力しません。<strong>照合：</strong>d払いは日時・金額・利用先の一致件数を比較します。クレカは保存履歴と日付・利用先・金額の3項目で一致を確認し、貼り付け内の重複行は削除・統合しません。取引IDがないため、同条件の別取引が「保存済み」と表示される場合があります。そのときは手動で✓を付けてコピーできます。</p>
+<p class="foot"><strong>d払い：</strong>「[日付 時刻]」、利用先、「¥ 金額」を抽出します。<strong>クレカ：</strong>「日付 → 利用先 → 支払回数 → 金額（円）」を抽出します。クレカには時刻が含まれないため、時刻欄は表示せずCSVは3列で出力します。コピー時のみ利用先と金額の間に空欄1列を挿入します。金額の桁区切りカンマを除去し、元の明細にある <code>#VALUE!</code> などのエラー行は出力しません。<strong>照合：</strong>d払いは日時・金額・利用先の一致件数を比較します。クレカは保存履歴と日付・利用先・金額の3項目で一致を確認し、貼り付け内の重複行は削除・統合しません。取引IDがないため、同条件の別取引が「保存済み」と表示される場合があります。そのときは手動で✓を付けてコピーできます。</p>
 </div>
 </main>
 <div class="delete-confirm-overlay" id="confirm-overlay" hidden>
@@ -248,8 +248,8 @@ function switchTab(next){
  $('source').value=st.raw;if(st.raw)reclassify(active,false);$('source-hint').textContent=active==='dpay'?'d払いのWeb明細からコピーした文字列を、そのまま貼り付けてください。':'クレジットカードのWeb明細（日付・利用先・支払回数・金額）を、そのまま貼り付けてください。';
  $('source').placeholder=active==='dpay'?'[2026/10/14 16:00]\n利用先\nd払い(バーコード決済)\n都度決済 ¥ 340':'2026/10/16\n福岡市地下鉄／交通利用\n1回払い\n600円';
  $('archive-title').textContent=`保存した${names[active]}明細`;$('from-date').value=st.dates.from;$('to-date').value=st.dates.to;document.body.classList.toggle('credit-mode',active==='credit');$('copy-time').hidden=active==='credit';
- $('copy-note').textContent=active==='dpay'?'3列コピー時のみ03へ保存。時刻だけのコピー・CSV保存では03へ保存しません。CSVは見出しなしの4列です。':'3列コピー時のみ03へ保存。日付・利用先・金額の順でコピー・CSV保存します。貼り付け内の同一明細は統合しません。';
- $('copy-main').textContent=active==='credit'?'✓した日付・利用先・金額（3列）をコピー':'✓した日付・金額・利用先（3列）をコピー';
+ $('copy-note').textContent=active==='dpay'?'3列コピー時のみ03へ保存。時刻だけのコピー・CSV保存では03へ保存しません。CSVは見出しなしの4列です。':'02の明細コピーボタンで03へ保存。コピー時は「日付・利用先・空欄・金額」の4列、CSVは「日付・利用先・金額」の3列です。貼り付け内の同一明細は統合しません。';
+ $('copy-main').textContent=active==='credit'?'✓した日付・利用先・空欄・金額（4列）をコピー':'✓した日付・金額・利用先（3列）をコピー';
  for(const tbl of document.querySelectorAll('.preview-table, .archive-table')){const preview=tbl.classList.contains('preview-table'),headers=preview?(active==='credit'?['✓','日付','利用先','金額','時刻','照合']:['✓','日付','金額','利用先','時刻','照合']):(active==='credit'?['日付','利用先','金額','時刻']:['日付','金額','利用先','時刻']);tbl.querySelectorAll('thead th').forEach((th,i)=>th.textContent=headers[i]);}
  $('saved-csv-note').textContent=active==='dpay'?'CSVは4列・見出しなし。JSONバックアップは復元用です。バックアップは現在開いている支払方法のものだけを扱います。':'CSVは日付・利用先・金額の3列・見出しなし。JSONバックアップは復元用です。バックアップは現在開いている支払方法のものだけを扱います。';
  $('delete-all').textContent=`${names[active]}の保存明細を全削除`;renderPreview();renderArchive();
@@ -260,7 +260,7 @@ function closeDeletion(){ $('confirm-overlay').hidden=true;const previous=pendin
 function refreshPreviewAfterDeletion(mode){
  const st=modes[mode]; if(!st.preview.length)return;
  st.preview=classify(st.preview.map(({date,amount,shop,time})=>({date,amount,shop,time})),st.saved,mode);
- st.notice='クラウド履歴の削除を反映しました。03への保存は3列コピー時だけです。';st.noticeType='warn';if(active===mode)renderPreview();
+ st.notice='クラウド履歴の削除を反映しました。03への保存は02の明細コピー時だけです。';st.noticeType='warn';if(active===mode)renderPreview();
 }
 async function commitDeletion(mode,filter){
  if(busyDeletes)return;busyDeletes=true;
@@ -281,14 +281,14 @@ function downloadCsv(rows,name,target){if(!rows.length)return;const cols=active=
 async function copySelected(kind){
  const mode=active,st=modes[mode],selectedPreview=st.preview.filter(r=>r.selected),rows=selectedPreview.map(r=>({date:r.date,amount:r.amount,shop:r.shop,time:r.time})),selectedIndices=new Set(selectedPreview.map(r=>r.index)),sourceRaw=st.raw,parsedRows=st.preview.map(r=>({date:r.date,amount:r.amount,shop:r.shop,time:r.time}));
  if(!rows.length||kind==='main'&&busyCopies[mode])return;
- const tsv=rows.map(r=>(kind==='time'?[r.time]:mode==='credit'?[r.date,r.shop,r.amount]:[r.date,r.amount,r.shop]).join('\t')).join('\n');
+ const tsv=rows.map(r=>(kind==='time'?[r.time]:mode==='credit'?[r.date,r.shop,'',r.amount]:[r.date,r.amount,r.shop]).join('\t')).join('\n');
  try{
   if(!navigator.clipboard?.writeText)throw Error('clipboard unavailable');await navigator.clipboard.writeText(tsv);
  }catch(e){
   const temp=document.createElement('textarea');temp.value=tsv;temp.style.position='fixed';temp.style.opacity='0';document.body.append(temp);temp.focus();temp.select();const ok=document.execCommand('copy');temp.remove();
   if(!ok){st.notice='コピーできませんでした。CSV保存をご利用ください。';st.noticeType='warn';if(active===mode)renderPreview();return;}
  }
- const label=kind==='time'?'時刻1列':mode==='credit'?'日付・利用先・金額3列':'日付・金額・利用先3列';
+ const label=kind==='time'?'時刻1列':mode==='credit'?'日付・利用先・空欄・金額4列':'日付・金額・利用先3列';
  if(kind==='time'){
   st.notice=`選択した${rows.length}件の${label}をコピーしました。03への保存は行っていません。`;
   st.noticeType='success';if(active===mode)renderPreview();return;
@@ -300,11 +300,11 @@ async function copySelected(kind){
   const result=await updateRemote(mode,old=>{const current=classify(parsedRows,old,mode),fresh=current.filter(r=>selectedIndices.has(r.index)&&!r.existing&&!st.copiedIndices.has(r.index));return old.concat(fresh.map(r=>({date:r.date,amount:r.amount,shop:r.shop,time:r.time})));});
   const count=result.after-result.before;
   if(st.raw===sourceRaw)for(const r of selectedPreview)st.copiedIndices.add(r.index);
-  st.savedNotice=count?`3列コピーした明細のうち${count}件を03に保存しました。`:'03に追加する新規明細はありませんでした。';st.savedNoticeType='success';
+  st.savedNotice=count?`明細コピーしたうち${count}件を03に保存しました。`:'03に追加する新規明細はありませんでした。';st.savedNoticeType='success';
   st.notice=`${rows.length}件の${label}をコピーしました。03への新規保存は${count}件です。`;st.noticeType='success';
   // 保存済み表示への更新はonSnapshotで行い、チェック状態は保持する。
  }catch(e){
-  st.notice=`${rows.length}件をコピーしましたが、03の保存に失敗しました（${e.code||e.message}）。再度3列コピーで保存を試してください。`;st.noticeType='error';
+  st.notice=`${rows.length}件をコピーしましたが、03の保存に失敗しました（${e.code||e.message}）。再度明細コピーで保存を試してください。`;st.noticeType='error';
   st.savedNotice=st.notice;st.savedNoticeType='error';
  }finally{busyCopies[mode]=false;if(active===mode){renderPreview();renderArchive();}}
 }
